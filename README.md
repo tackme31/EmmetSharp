@@ -26,12 +26,10 @@ var result = Emmet.Render("div>p{Hello, EmmetSharp!}");
 - [x] Text (`a{Content}`)
     - Without tag (`{Click }+a{here}`)
 
-### Feature
+### Other Features
+- [ ] Indentation
 - [ ] Implicit tag names
 - [ ] "Lorem Ipsum" generator 
-
-### Others
-- Indentation
 
 ## See also
 - [Emmet &#8212; the essential toolkit for web-developers](https://emmet.io/)
