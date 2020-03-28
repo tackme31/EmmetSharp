@@ -70,5 +70,16 @@ namespace EmmetSharp.Test.Syntax
             var actual = Emmet.Render("div>(div>li)*2");
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void Multiplication_MultiplePart_CanParse()
+        {
+            var expected =
+                "<div>1</div><div>4</div>" +
+                "<div>2</div><div>5</div>" +
+                "<div>3</div><div>6</div>";
+            var actual = Emmet.Render("(div{$}+div{$@4})*3");
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

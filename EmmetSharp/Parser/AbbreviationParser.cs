@@ -95,7 +95,7 @@ namespace EmmetSharp.Parser
             var numberingMatches = NumberingRegex
                 .Matches(abbreviation)
                 .OfType<Match>()
-                .OrderByDescending(m => m.Groups["numbering"].Value.Length);
+                .OrderByDescending(m => m.Value.Length);
             foreach (var numberingMatch in numberingMatches)
             {
                 var numbering = numberingMatch.Groups["numbering"].Value;
