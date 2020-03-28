@@ -10,6 +10,11 @@ namespace EmmetSharp.Renderer
     {
         public static string RenderStartTag(Node node, Func<Node, Node> nodeFomatter = null)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException($"The argument '{nameof(node)}' should be not null.");
+            }
+
             node = nodeFomatter?.Invoke(node) ?? node;
             var sb = new StringBuilder();
 
@@ -59,6 +64,11 @@ namespace EmmetSharp.Renderer
 
         public static string RenderEndTag(Node node)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException($"The argument '{nameof(node)}' should be not null.");
+            }
+
             return $"</{node.Tag}>";
         }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using EmmetSharp.Renderer;
+using EmmetSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EmmetSharp.Test.Syntax
@@ -15,7 +15,7 @@ namespace EmmetSharp.Test.Syntax
                     "<p>" +
                     "</p>" +
                 "</div>";
-            var actual = AbbreviationRenderer.Render("div>p");
+            var actual = Emmet.Render("div>p");
             Assert.AreEqual(expected, actual);
         }
 
@@ -23,7 +23,7 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Child_EmptyNode_ShouldFormatError()
         {
-            AbbreviationRenderer.Render("div>>p");
+            Emmet.Render("div>>p");
         }
     }
 }

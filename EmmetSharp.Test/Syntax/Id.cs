@@ -1,5 +1,5 @@
 ﻿using System;
-using EmmetSharp.Renderer;
+using EmmetSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EmmetSharp.Test.Syntax
@@ -11,7 +11,7 @@ namespace EmmetSharp.Test.Syntax
         public void Id_Single_CanParse()
         {
             var expected = "<div id=\"id\"></div>";
-            var actual = AbbreviationRenderer.Render("div#id");
+            var actual = Emmet.Render("div#id");
             Assert.AreEqual(expected, actual);
         }
 
@@ -19,7 +19,7 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Id_Multiple_ShouldFormatError()
         {
-            AbbreviationRenderer.Render("div#id1#id2");
+            Emmet.Render("div#id1#id2");
         }
     }
 }

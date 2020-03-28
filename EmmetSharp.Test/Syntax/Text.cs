@@ -1,5 +1,5 @@
 ﻿using System;
-using EmmetSharp.Renderer;
+using EmmetSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EmmetSharp.Test.Syntax
@@ -11,7 +11,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_WithTag_CanParse()
         {
             var expected = "<p>text</p>";
-            var actual = AbbreviationRenderer.Render("p{text}");
+            var actual = Emmet.Render("p{text}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -19,7 +19,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_WithoutTag_CanParse()
         {
             var expected = "text";
-            var actual = AbbreviationRenderer.Render("{text}");
+            var actual = Emmet.Render("{text}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -27,7 +27,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_Sibling_CanParse()
         {
             var expected = "click <a>here</a>";
-            var actual = AbbreviationRenderer.Render("{click }+a{here}");
+            var actual = Emmet.Render("{click }+a{here}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -35,21 +35,21 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithId_ShouldFormatError()
         {
-            AbbreviationRenderer.Render("#id{text}");
+            Emmet.Render("#id{text}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithClass_ShouldFormatError()
         {
-            AbbreviationRenderer.Render(".class{text}");
+            Emmet.Render(".class{text}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithAttribute_ShouldFormatError()
         {
-            AbbreviationRenderer.Render("[attr=\"value\"]{text}");
+            Emmet.Render("[attr=\"value\"]{text}");
         }
     }
 }
