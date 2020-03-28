@@ -1,7 +1,7 @@
 # EmmetSharp
 A Emmet abbreviation parser written in C#.
 
-**This software is in early stage of development.**
+**This software is in early stage of development. The APIs will be likely to change.**
 
 ## Usage
 To expand an abbreviation, use the `Emment.Render` method.
@@ -11,21 +11,7 @@ using EmmetSharp;
 var result = Emmet.Render("div>p{Hello, EmmetSharp!}");
 // => "<div><p>Hello, EmmetSharp!</p></div>"
 ```
-
-You can format the HTML tags before expanding with `nodeFormatter` argument.
-
-```csharp
-using EmmetSharp;
-
-var result = Emmet.Render("div>p{Hello, EmmetSharp!}", node => {
-    node.Text = node.Text.ToUpper();
-    return node;
-});
-// => "<div><p>HELLO, EMMETSHARP!</p></div>"
-
-```
-
-## Supported
+## Implemented Features
 ### Syntax
 - [x] Child (`div>p`)
 - [x] Sibling (`p+p`)
@@ -41,6 +27,8 @@ var result = Emmet.Render("div>p{Hello, EmmetSharp!}", node => {
     - Without tag (`{Click }+a{here}`)
 
 ### Feature
+- [ ] Implicit tag names
+- [ ] "Lorem Ipsum" generator 
 
 ### Others
 - Indentation
