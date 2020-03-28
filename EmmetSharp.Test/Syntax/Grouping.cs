@@ -13,7 +13,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<a></a>" +
                 "<p></p>";
-            var actual = ExpressionRenderer.Render("(a+p)");
+            var actual = AbbreviationRenderer.Render("(a+p)");
             Assert.AreEqual(expected, actual);
         }
 
@@ -25,7 +25,7 @@ namespace EmmetSharp.Test.Syntax
                     "<a></a>" +
                     "<p></p>" +
                 "</div>";
-            var actual = ExpressionRenderer.Render("div>(a+p)");
+            var actual = AbbreviationRenderer.Render("div>(a+p)");
             Assert.AreEqual(expected, actual);
         }
 
@@ -38,7 +38,7 @@ namespace EmmetSharp.Test.Syntax
                     "<h1></h1>" +
                 "</div>" +
                 "<p></p>";
-            var actual = ExpressionRenderer.Render("p+(div>h1)+p");
+            var actual = AbbreviationRenderer.Render("p+(div>h1)+p");
             Assert.AreEqual(expected, actual);
         }
 
@@ -50,7 +50,7 @@ namespace EmmetSharp.Test.Syntax
                 "<a></a>" +
                 "<span></span>" +
                 "<h1></h1>";
-            var actual = ExpressionRenderer.Render("((p+a)+span)+h1");
+            var actual = AbbreviationRenderer.Render("((p+a)+span)+h1");
             Assert.AreEqual(expected, actual);
         }
 
@@ -58,14 +58,14 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Grouping_MissingOpen_ShouldFormatError()
         {
-            ExpressionRenderer.Render("(a+p))");
+            AbbreviationRenderer.Render("(a+p))");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Grouping_MissingClose_ShouldFormatError()
         {
-            ExpressionRenderer.Render("((a+p)");
+            AbbreviationRenderer.Render("((a+p)");
         }
     }
 }

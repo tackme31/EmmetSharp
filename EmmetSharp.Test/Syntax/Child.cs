@@ -15,7 +15,7 @@ namespace EmmetSharp.Test.Syntax
                     "<p>" +
                     "</p>" +
                 "</div>";
-            var actual = ExpressionRenderer.Render("div>p");
+            var actual = AbbreviationRenderer.Render("div>p");
             Assert.AreEqual(expected, actual);
         }
 
@@ -23,7 +23,7 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Child_EmptyNode_ShouldFormatError()
         {
-            ExpressionRenderer.Render("div>>p");
+            AbbreviationRenderer.Render("div>>p");
         }
     }
 }

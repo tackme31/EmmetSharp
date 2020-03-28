@@ -13,7 +13,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<li></li>" +
                 "<li></li>";
-            var actual = ExpressionRenderer.Render("li*2");
+            var actual = AbbreviationRenderer.Render("li*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -23,7 +23,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<li></li><a></a>" +
                 "<li></li><a></a>";
-            var actual = ExpressionRenderer.Render("(li+a)*2");
+            var actual = AbbreviationRenderer.Render("(li+a)*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -37,7 +37,7 @@ namespace EmmetSharp.Test.Syntax
                 "<div>" +
                     "<li></li>" +
                 "</div>";
-            var actual = ExpressionRenderer.Render("(div>li)*2");
+            var actual = AbbreviationRenderer.Render("(div>li)*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -51,7 +51,7 @@ namespace EmmetSharp.Test.Syntax
                 "<div>" +
                     "<li></li>" +
                 "</div>";
-            var actual = ExpressionRenderer.Render("div*2>li");
+            var actual = AbbreviationRenderer.Render("div*2>li");
             Assert.AreEqual(expected, actual);
         }
 
@@ -67,7 +67,7 @@ namespace EmmetSharp.Test.Syntax
                         "<li></li>" +
                     "</div>" +
                 "</div>";
-            var actual = ExpressionRenderer.Render("div>(div>li)*2");
+            var actual = AbbreviationRenderer.Render("div>(div>li)*2");
             Assert.AreEqual(expected, actual);
         }
     }

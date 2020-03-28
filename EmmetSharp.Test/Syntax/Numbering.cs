@@ -14,7 +14,7 @@ namespace EmmetSharp.Test.Syntax
                 "<h1></h1>" +
                 "<h2></h2>" +
                 "<h3></h3>";
-            var actual = ExpressionRenderer.Render("h$*3");
+            var actual = AbbreviationRenderer.Render("h$*3");
             Assert.AreEqual(expected, actual);
         }
 
@@ -24,7 +24,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<p>001 01 0001 1</p>" +
                 "<p>002 02 0002 2</p>";
-            var actual = ExpressionRenderer.Render("p{$$$ $$ $$$$ $}*2");
+            var actual = AbbreviationRenderer.Render("p{$$$ $$ $$$$ $}*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -37,7 +37,7 @@ namespace EmmetSharp.Test.Syntax
                 "<p>3</p>" +
                 "<p>2</p>" +
                 "<p>1</p>";
-            var actual = ExpressionRenderer.Render("p{$@-}*5");
+            var actual = AbbreviationRenderer.Render("p{$@-}*5");
             Assert.AreEqual(expected, actual);
         }
 
@@ -50,7 +50,7 @@ namespace EmmetSharp.Test.Syntax
                 "<p>5</p>" +
                 "<p>6</p>" +
                 "<p>7</p>";
-            var actual = ExpressionRenderer.Render("p{$@3}*5");
+            var actual = AbbreviationRenderer.Render("p{$@3}*5");
             Assert.AreEqual(expected, actual);
         }
 
@@ -63,7 +63,7 @@ namespace EmmetSharp.Test.Syntax
                 "<p>5</p>" +
                 "<p>4</p>" +
                 "<p>3</p>";
-            var actual = ExpressionRenderer.Render("p{$@-3}*5");
+            var actual = AbbreviationRenderer.Render("p{$@-3}*5");
             Assert.AreEqual(expected, actual);
         }
     }

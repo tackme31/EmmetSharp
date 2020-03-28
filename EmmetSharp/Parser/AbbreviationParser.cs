@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace EmmetSharp.Parser
 {
-    public class ExpressionParser
+    public class AbbreviationParser
     {
         private static readonly Regex MultiplicationRegex = new Regex(@"\*(?<multiplier>[1-9]\d*)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
@@ -23,24 +23,24 @@ namespace EmmetSharp.Parser
             @"$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        public static Node Parse(string expression)
+        public static Node Parse(string abbreviation)
         {
             var root = CreateNode("root");
-            var expressions = SplitExpressionAt(expression, '>');
-            root.Children = ParseInner(expressions);
+            var abbreviations = SplitAbbreviationAt(abbreviation, '>');
+            root.Children = ParseInner(abbreviations);
             return root;
         }
 
-        private static List<Node> ParseInner(List<string> expressions)
+        private static List<Node> ParseInner(List<string> abbreviations)
         {
-            if (expressions.Count < 1)
+            if (abbreviations.Count < 1)
             {
                 return new List<Node>();
             }
 
-            var firstExpression = expressions[0];
-            var firstSiblings = SplitExpressionAt(firstExpression, '+');
-            if (!MultiplicationRegex.IsMatch(firstExpression) && expressions.Count == 1 && firstSiblings.Count == 1)
+            var firstAbbreviation = abbreviations[0];
+            var firstSiblings = SplitAbbreviationAt(firstAbbreviation, '+');
+            if (!MultiplicationRegex.IsMatch(firstAbbreviation) && abbreviations.Count == 1 && firstSiblings.Count == 1)
             {
                 return new List<Node>()
                 {
@@ -66,18 +66,18 @@ namespace EmmetSharp.Parser
                 for (var i = 1; i <= multiplier; i++)
                 {
                     var numberedBody = ReplaceNumberings(siblingBody, i, multiplier);
-                    var siblingExpressions = SplitExpressionAt(numberedBody, '>');
-                    var nodes = ParseInner(siblingExpressions);
+                    var siblingAbbreviations = SplitAbbreviationAt(numberedBody, '>');
+                    var nodes = ParseInner(siblingAbbreviations);
                     result.AddRange(nodes);
                 }
 
                 lastNodeMultiplir = multiplier;
             }
 
-            var restExpressions = expressions.GetRange(1, expressions.Count - 1);
-            if (result.Count > 0 && restExpressions.Count > 0)
+            var restAbbreviations = abbreviations.GetRange(1, abbreviations.Count - 1);
+            if (result.Count > 0 && restAbbreviations.Count > 0)
             {
-                var nodes = ParseInner(restExpressions);
+                var nodes = ParseInner(restAbbreviations);
                 var lastNodes = result.GetRange(result.Count - lastNodeMultiplir, lastNodeMultiplir);
 
                 // When the last node is multiplied, set its children to each node.
@@ -90,10 +90,10 @@ namespace EmmetSharp.Parser
             return result;
         }
 
-        private static string ReplaceNumberings(string expression, int index, int multiplier)
+        private static string ReplaceNumberings(string abbreviation, int index, int multiplier)
         {
             var numberingMatches = NumberingRegex
-                .Matches(expression)
+                .Matches(abbreviation)
                 .OfType<Match>()
                 .OrderByDescending(m => m.Groups["numbering"].Value.Length);
             foreach (var numberingMatch in numberingMatches)
@@ -110,10 +110,10 @@ namespace EmmetSharp.Parser
                     : multiplier + @base - index;
 
                 var numbers = n.ToString().PadLeft(numbering.Length, '0');
-                expression = expression.Replace(numberingMatch.Value, numbers);
+                abbreviation = abbreviation.Replace(numberingMatch.Value, numbers);
             }
 
-            return expression;
+            return abbreviation;
         }
 
         private static Node CreateNode(string node)
@@ -121,7 +121,7 @@ namespace EmmetSharp.Parser
             var tagMatch = NodeRegex.Match(node);
             if (!tagMatch.Success)
             {
-                throw new FormatException($"Invalid format of the node expression (Expression: {node})");
+                throw new FormatException($"Invalid format of the node abbreviation (Value: {node})");
             }
 
             var tag = tagMatch.Groups["tag"].Value;
@@ -156,7 +156,7 @@ namespace EmmetSharp.Parser
                 };
             }
 
-            throw new FormatException($"Tag name is missing (Expression: {node})");
+            throw new FormatException($"Tag name is missing (Value: {node})");
 
             ICollection<string> GetCaptureValues(Match m, string groupName)
             {
@@ -175,14 +175,14 @@ namespace EmmetSharp.Parser
             }
         }
 
-        private static List<string> SplitExpressionAt(string expression, char delimiter)
+        private static List<string> SplitAbbreviationAt(string abbreviation, char delimiter)
         {
             var result = new List<string>();
             var sb = new StringBuilder();
             var nest = 0;
             var inText = false;
             var inAttr = false;
-            foreach (var character in TrimParenthesis(expression))
+            foreach (var character in TrimParenthesis(abbreviation))
             {
                 // Update status
                 switch (character)
@@ -224,17 +224,17 @@ namespace EmmetSharp.Parser
 
             if (result.Any(exp => exp.Length == 0))
             {
-                throw new FormatException($"An empty node is contained in the expression (Expression: {expression})");
+                throw new FormatException($"An empty node is contained in the abbreviation (Value: {abbreviation})");
             }
 
             if (nest < 0)
             {
-                throw new FormatException($"Too much open parenthesis (Expression: {expression})");
+                throw new FormatException($"Too much open parenthesis (Value: {abbreviation})");
             }
 
             if (nest > 0)
             {
-                throw new FormatException($"Too much close parenthesis (Expression: {expression})");
+                throw new FormatException($"Too much close parenthesis (Value: {abbreviation})");
             }
 
             return result;

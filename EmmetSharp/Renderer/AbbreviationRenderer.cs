@@ -7,18 +7,18 @@ using System.Text;
 
 namespace EmmetSharp.Renderer
 {
-    public static class ExpressionRenderer
+    public static class AbbreviationRenderer
     {
         private static readonly HashSet<string> NoEndTags = new HashSet<string> { "br", "hr", "img", "input", "meta", "area", "base", "col", "embed", "keygen", "link", "param", "source" };
 
-        public static string Render(string expression, Func<string, string> textFormatter = null)
+        public static string Render(string abbreviation, Func<string, string> textFormatter = null)
         {
-            if (string.IsNullOrWhiteSpace(expression))
+            if (string.IsNullOrWhiteSpace(abbreviation))
             {
-                throw new ArgumentException($"The argument '{nameof(expression)}' should be not null.");
+                throw new ArgumentException($"The argument '{nameof(abbreviation)}' should be not null.");
             }
 
-            var rootNode = ExpressionParser.Parse(expression);
+            var rootNode = AbbreviationParser.Parse(abbreviation);
             return RenderInner(rootNode.Children, textFormatter);
         }
 
