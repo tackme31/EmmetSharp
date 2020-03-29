@@ -1,5 +1,5 @@
 # EmmetSharp
-A Emmet abbreviation parser written in C#.
+An Emmet abbreviation parser written in C#.
 
 **This software is in early stage of development. The APIs will be likely to change.**
 
