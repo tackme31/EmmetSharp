@@ -38,7 +38,7 @@ namespace EmmetSharp.Renderer
                 sb.Append(WebUtility.HtmlEncode(text));
             }
 
-            foreach (var child in tag?.Children ?? Enumerable.Empty<HtmlTag>())
+            foreach (var child in formattedTag?.Children ?? Enumerable.Empty<HtmlTag>())
             {
                 if (formattedTag.Children != null)
                 {
