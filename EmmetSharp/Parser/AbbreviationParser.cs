@@ -238,14 +238,46 @@ namespace EmmetSharp.Parser
             }
 
             return result;
+        }
 
-            string TrimParenthesis(string value)
+        private static string TrimParenthesis(string value)
+        {
+            while (value.Length > 2
+                && value[0] == '('
+                && value[value.Length - 1] == ')')
             {
-                return value.Length > 1 && value[0] == '(' && value[value.Length - 1] == ')'
-                    ? value.Substring(1, value.Length - 2)
-                    : value;
+                if (HasNonNestedPart(value))
+                {
+                    return value;
+                }
+                value = value.Substring(1, value.Length - 2);
+            }
+
+            return value;
+
+            bool HasNonNestedPart(string v)
+            {
+                var nest = 0;
+                foreach (var c in v)
+                {
+                    switch (c)
+                    {
+                        case '(':
+                            nest++;
+                            continue;
+                        case ')':
+                            nest--;
+                            continue;
+                    }
+
+                    if (nest == 0)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
     }
-
 }
