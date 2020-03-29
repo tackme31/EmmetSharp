@@ -55,6 +55,14 @@ namespace EmmetSharp.Test.Syntax
         }
 
         [TestMethod]
+        public void Grouping_LikeTopLevel_CanParse()
+        {
+            var expected = "<p></p><a></a><p></p>";
+            var actual = Emmet.Render("((p+a)+(p))");
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Grouping_MissingOpen_ShouldFormatError()
         {

@@ -182,10 +182,11 @@ namespace EmmetSharp.Parser
             var nest = 0;
             var inText = false;
             var inAttr = false;
-            foreach (var character in TrimParenthesis(abbreviation))
+            var trimmedAbbr = TrimParenthesis(abbreviation);
+            for (var i = 0; i < trimmedAbbr.Length; i++)
             {
                 // Update status
-                switch (character)
+                switch (trimmedAbbr[i])
                 {
                     case '{' when !inText && !inAttr:
                         inText = true;
@@ -207,9 +208,9 @@ namespace EmmetSharp.Parser
                         break;
                 }
 
-                if (character != delimiter || inText || inAttr || nest > 0)
+                if (trimmedAbbr[i] != delimiter || inText || inAttr || nest > 0)
                 {
-                    sb.Append(character);
+                    sb.Append(trimmedAbbr[i]);
                     continue;
                 }
 
@@ -238,14 +239,46 @@ namespace EmmetSharp.Parser
             }
 
             return result;
+        }
 
-            string TrimParenthesis(string value)
+        private static string TrimParenthesis(string value)
+        {
+            while (value.Length > 2
+                && value[0] == '('
+                && value[value.Length - 1] == ')')
             {
-                return value.Length > 1 && value[0] == '(' && value[value.Length - 1] == ')'
-                    ? value.Substring(1, value.Length - 2)
-                    : value;
+                if (HasNonNestedPart(value))
+                {
+                    return value;
+                }
+                value = value.Substring(1, value.Length - 2);
+            }
+
+            return value;
+
+            bool HasNonNestedPart(string v)
+            {
+                var nest = 0;
+                for (var i = 0; i < v.Length; i++)
+                {
+                    switch (v[i])
+                    {
+                        case '(':
+                            nest++;
+                            continue;
+                        case ')':
+                            nest--;
+                            continue;
+                    }
+
+                    if (nest == 0)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
     }
-
 }
