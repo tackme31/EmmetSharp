@@ -182,10 +182,11 @@ namespace EmmetSharp.Parser
             var nest = 0;
             var inText = false;
             var inAttr = false;
-            foreach (var character in TrimParenthesis(abbreviation))
+            var trimmedAbbr = TrimParenthesis(abbreviation);
+            for (var i = 0; i < trimmedAbbr.Length; i++)
             {
                 // Update status
-                switch (character)
+                switch (trimmedAbbr[i])
                 {
                     case '{' when !inText && !inAttr:
                         inText = true;
@@ -207,9 +208,9 @@ namespace EmmetSharp.Parser
                         break;
                 }
 
-                if (character != delimiter || inText || inAttr || nest > 0)
+                if (trimmedAbbr[i] != delimiter || inText || inAttr || nest > 0)
                 {
-                    sb.Append(character);
+                    sb.Append(trimmedAbbr[i]);
                     continue;
                 }
 
@@ -258,9 +259,9 @@ namespace EmmetSharp.Parser
             bool HasNonNestedPart(string v)
             {
                 var nest = 0;
-                foreach (var c in v)
+                for (var i = 0; i < v.Length; i++)
                 {
-                    switch (c)
+                    switch (v[i])
                     {
                         case '(':
                             nest++;
