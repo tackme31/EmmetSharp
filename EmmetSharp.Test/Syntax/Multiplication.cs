@@ -13,7 +13,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<li></li>" +
                 "<li></li>";
-            var actual = Emmet.Render("li*2");
+            var actual = Emmet.Expand("li*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -23,7 +23,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<li></li><a></a>" +
                 "<li></li><a></a>";
-            var actual = Emmet.Render("(li+a)*2");
+            var actual = Emmet.Expand("(li+a)*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -37,7 +37,7 @@ namespace EmmetSharp.Test.Syntax
                 "<div>" +
                     "<li></li>" +
                 "</div>";
-            var actual = Emmet.Render("(div>li)*2");
+            var actual = Emmet.Expand("(div>li)*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -51,7 +51,7 @@ namespace EmmetSharp.Test.Syntax
                 "<div>" +
                     "<li></li>" +
                 "</div>";
-            var actual = Emmet.Render("div*2>li");
+            var actual = Emmet.Expand("div*2>li");
             Assert.AreEqual(expected, actual);
         }
 
@@ -67,7 +67,7 @@ namespace EmmetSharp.Test.Syntax
                         "<li></li>" +
                     "</div>" +
                 "</div>";
-            var actual = Emmet.Render("div>(div>li)*2");
+            var actual = Emmet.Expand("div>(div>li)*2");
             Assert.AreEqual(expected, actual);
         }
 
@@ -78,7 +78,7 @@ namespace EmmetSharp.Test.Syntax
                 "<div>1</div><div>4</div>" +
                 "<div>2</div><div>5</div>" +
                 "<div>3</div><div>6</div>";
-            var actual = Emmet.Render("(div{$}+div{$@4})*3");
+            var actual = Emmet.Expand("(div{$}+div{$@4})*3");
             Assert.AreEqual(expected, actual);
         }
     }

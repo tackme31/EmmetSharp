@@ -11,7 +11,7 @@ namespace EmmetSharp.Test.Syntax
         public void Id_Single_CanParse()
         {
             var expected = "<div id=\"id\"></div>";
-            var actual = Emmet.Render("div#id");
+            var actual = Emmet.Expand("div#id");
             Assert.AreEqual(expected, actual);
         }
 
@@ -19,7 +19,7 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Id_Multiple_ShouldFormatError()
         {
-            Emmet.Render("div#id1#id2");
+            Emmet.Expand("div#id1#id2");
         }
     }
 }
