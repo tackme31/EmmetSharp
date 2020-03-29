@@ -230,12 +230,12 @@ namespace EmmetSharp.Parser
 
             if (nest < 0)
             {
-                throw new FormatException($"Too much open parenthesis (Value: {abbreviation})");
+                throw new FormatException($"Too much close parenthesis (Value: {abbreviation})");
             }
 
             if (nest > 0)
             {
-                throw new FormatException($"Too much close parenthesis (Value: {abbreviation})");
+                throw new FormatException($"Too much open parenthesis (Value: {abbreviation})");
             }
 
             return result;
