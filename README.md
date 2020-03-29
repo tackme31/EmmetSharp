@@ -4,13 +4,26 @@ A Emmet abbreviation parser written in C#.
 **This software is in early stage of development. The APIs will be likely to change.**
 
 ## Usage
-To expand an abbreviation, use the `Emment.Render` method.
+To expand an abbreviation, use the `Emment.Expand` method.
 ```csharp
 using EmmetSharp;
 
-var result = Emmet.Render("div>p{Hello, EmmetSharp!}");
+var result = Emmet.Expand("div>p{Hello, EmmetSharp!}");
 // => "<div><p>Hello, EmmetSharp!</p></div>"
 ```
+
+If you want to format the HTML tags before rendering, call the method with the `tagFormatter` argument.
+
+```csharp
+using EmmetSharp;
+
+var result = Emmet.Expand("div>p{Hello, EmmetSharp!}", tag => {
+    tag.Text = tag.Text.ToUpper();
+    return tag;
+});
+// => "<div><p>HELLO, EMMETSHARP!</p></div>"
+```
+
 ## Implemented Features
 ### Syntax
 - [x] Child (`div>p`)
