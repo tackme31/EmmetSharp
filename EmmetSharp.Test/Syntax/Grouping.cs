@@ -13,7 +13,7 @@ namespace EmmetSharp.Test.Syntax
             var expected =
                 "<a></a>" +
                 "<p></p>";
-            var actual = Emmet.Render("(a+p)");
+            var actual = Emmet.Expand("(a+p)");
             Assert.AreEqual(expected, actual);
         }
 
@@ -25,7 +25,7 @@ namespace EmmetSharp.Test.Syntax
                     "<a></a>" +
                     "<p></p>" +
                 "</div>";
-            var actual = Emmet.Render("div>(a+p)");
+            var actual = Emmet.Expand("div>(a+p)");
             Assert.AreEqual(expected, actual);
         }
 
@@ -38,7 +38,7 @@ namespace EmmetSharp.Test.Syntax
                     "<h1></h1>" +
                 "</div>" +
                 "<p></p>";
-            var actual = Emmet.Render("p+(div>h1)+p");
+            var actual = Emmet.Expand("p+(div>h1)+p");
             Assert.AreEqual(expected, actual);
         }
 
@@ -50,7 +50,7 @@ namespace EmmetSharp.Test.Syntax
                 "<a></a>" +
                 "<span></span>" +
                 "<h1></h1>";
-            var actual = Emmet.Render("((p+a)+span)+h1");
+            var actual = Emmet.Expand("((p+a)+span)+h1");
             Assert.AreEqual(expected, actual);
         }
 
@@ -58,7 +58,7 @@ namespace EmmetSharp.Test.Syntax
         public void Grouping_LikeTopLevel_CanParse()
         {
             var expected = "<p></p><a></a><p></p>";
-            var actual = Emmet.Render("((p+a)+(p))");
+            var actual = Emmet.Expand("((p+a)+(p))");
             Assert.AreEqual(expected, actual);
         }
 
@@ -66,14 +66,14 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Grouping_MissingOpen_ShouldFormatError()
         {
-            Emmet.Render("(a+p))");
+            Emmet.Expand("(a+p))");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Grouping_MissingClose_ShouldFormatError()
         {
-            Emmet.Render("((a+p)");
+            Emmet.Expand("((a+p)");
         }
     }
 }

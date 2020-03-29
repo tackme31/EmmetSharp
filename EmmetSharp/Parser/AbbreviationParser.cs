@@ -13,7 +13,7 @@ namespace EmmetSharp.Parser
 
         private static readonly Regex NumberingRegex = new Regex(@"(?<numbering>\$+)(@(?<direction>-)?(?<base>[1-9]\d*)?)?", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static readonly Regex NodeRegex = new Regex(
+        private static readonly Regex HtmlTagRegex = new Regex(
             @"^" +
             @"(?<tag>[^.#{}\[\]\s]+?)?" +
             @"(#(?<id>[^.#{}\[\]\s]+?))?" +
@@ -23,33 +23,31 @@ namespace EmmetSharp.Parser
             @"$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
-        public static Node Parse(string abbreviation)
+        public static List<HtmlTag> Parse(string abbreviation)
         {
-            var root = CreateNode("root");
             var abbreviations = SplitAbbreviationAt(abbreviation, '>');
-            root.Children = ParseInner(abbreviations);
-            return root;
+            return ParseInner(abbreviations);
         }
 
-        private static List<Node> ParseInner(List<string> abbreviations)
+        private static List<HtmlTag> ParseInner(List<string> abbreviations)
         {
             if (abbreviations.Count < 1)
             {
-                return new List<Node>();
+                return new List<HtmlTag>();
             }
 
             var firstAbbreviation = abbreviations[0];
             var firstSiblings = SplitAbbreviationAt(firstAbbreviation, '+');
             if (!MultiplicationRegex.IsMatch(firstAbbreviation) && abbreviations.Count == 1 && firstSiblings.Count == 1)
             {
-                return new List<Node>()
+                return new List<HtmlTag>()
                 {
-                    CreateNode(firstSiblings[0])
+                    CreateHtmlTag(firstSiblings[0])
                 };
             }
 
-            var result = new List<Node>();
-            var lastNodeMultiplir = 1;
+            var result = new List<HtmlTag>();
+            var lastMultiplir = 1;
             foreach (var sibling in firstSiblings)
             {
                 // Get multiplication data
@@ -67,23 +65,23 @@ namespace EmmetSharp.Parser
                 {
                     var numberedBody = ReplaceNumberings(siblingBody, i, multiplier);
                     var siblingAbbreviations = SplitAbbreviationAt(numberedBody, '>');
-                    var nodes = ParseInner(siblingAbbreviations);
-                    result.AddRange(nodes);
+                    var tags = ParseInner(siblingAbbreviations);
+                    result.AddRange(tags);
                 }
 
-                lastNodeMultiplir = multiplier;
+                lastMultiplir = multiplier;
             }
 
             var restAbbreviations = abbreviations.GetRange(1, abbreviations.Count - 1);
             if (result.Count > 0 && restAbbreviations.Count > 0)
             {
-                var nodes = ParseInner(restAbbreviations);
-                var lastNodes = result.GetRange(result.Count - lastNodeMultiplir, lastNodeMultiplir);
+                var tags = ParseInner(restAbbreviations);
+                var lastTags = result.GetRange(result.Count - lastMultiplir, lastMultiplir);
 
-                // When the last node is multiplied, set its children to each node.
-                foreach (var lastNode in lastNodes)
+                // When the last tag is multiplied, set its children to each tag.
+                foreach (var lastTag in lastTags)
                 {
-                    lastNode.Children = nodes;
+                    lastTag.Children = tags;
                 }
             }
 
@@ -116,12 +114,12 @@ namespace EmmetSharp.Parser
             return abbreviation;
         }
 
-        private static Node CreateNode(string node)
+        private static HtmlTag CreateHtmlTag(string htmlTag)
         {
-            var tagMatch = NodeRegex.Match(node);
+            var tagMatch = HtmlTagRegex.Match(htmlTag);
             if (!tagMatch.Success)
             {
-                throw new FormatException($"Invalid format of the node abbreviation (Value: {node})");
+                throw new FormatException($"Invalid format of the tag abbreviation (Value: {htmlTag})");
             }
 
             var tag = tagMatch.Groups["tag"].Value;
@@ -133,9 +131,9 @@ namespace EmmetSharp.Parser
             // HTML tag
             if (!string.IsNullOrWhiteSpace(tag))
             {
-                return new Node
+                return new HtmlTag
                 {
-                    Tag = tag,
+                    TagName = tag,
                     Id = id,
                     ClassList = classList,
                     Attributes = attributes,
@@ -150,13 +148,13 @@ namespace EmmetSharp.Parser
                 !classList.Any() &&
                 !attributes.Any())
             {
-                return new Node()
+                return new HtmlTag()
                 {
                     Text = text,
                 };
             }
 
-            throw new FormatException($"Tag name is missing (Value: {node})");
+            throw new FormatException($"Tag name is missing (Value: {htmlTag})");
 
             ICollection<string> GetCaptureValues(Match m, string groupName)
             {
@@ -225,7 +223,7 @@ namespace EmmetSharp.Parser
 
             if (result.Any(exp => exp.Length == 0))
             {
-                throw new FormatException($"An empty node is contained in the abbreviation (Value: {abbreviation})");
+                throw new FormatException($"An empty tag is contained in the abbreviation (Value: {abbreviation})");
             }
 
             if (nest < 0)

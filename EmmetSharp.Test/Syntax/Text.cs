@@ -11,7 +11,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_WithTag_CanParse()
         {
             var expected = "<p>text</p>";
-            var actual = Emmet.Render("p{text}");
+            var actual = Emmet.Expand("p{text}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -19,7 +19,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_WithoutTag_CanParse()
         {
             var expected = "text";
-            var actual = Emmet.Render("{text}");
+            var actual = Emmet.Expand("{text}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -27,7 +27,7 @@ namespace EmmetSharp.Test.Syntax
         public void Text_Sibling_CanParse()
         {
             var expected = "click <a>here</a>";
-            var actual = Emmet.Render("{click }+a{here}");
+            var actual = Emmet.Expand("{click }+a{here}");
             Assert.AreEqual(expected, actual);
         }
 
@@ -35,21 +35,21 @@ namespace EmmetSharp.Test.Syntax
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithId_ShouldFormatError()
         {
-            Emmet.Render("#id{text}");
+            Emmet.Expand("#id{text}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithClass_ShouldFormatError()
         {
-            Emmet.Render(".class{text}");
+            Emmet.Expand(".class{text}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithAttribute_ShouldFormatError()
         {
-            Emmet.Render("[attr=\"value\"]{text}");
+            Emmet.Expand("[attr=\"value\"]{text}");
         }
     }
 }

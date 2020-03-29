@@ -1,19 +1,29 @@
 ﻿using EmmetSharp.Models;
+using EmmetSharp.Parser;
 using EmmetSharp.Renderer;
 using System;
+using System.Text;
 
 namespace EmmetSharp
 {
     public static class Emmet
     {
-        public static string Render(string abbreviation)
+        public static string Expand(string abbreviation, Func<HtmlTag, HtmlTag> tagFormatter = null)
         {
             if (string.IsNullOrWhiteSpace(abbreviation))
             {
-                throw new ArgumentException($"The argument '{nameof(abbreviation)}' should be not null.");
+                throw new ArgumentException($"Argument '{nameof(abbreviation)}' cannot be null or empty.");
             }
 
-            return AbbreviationRenderer.Render(abbreviation);
+            var sb = new StringBuilder();
+            var nodes = AbbreviationParser.Parse(abbreviation);
+            foreach (var node in nodes)
+            {
+                var html = HtmlRenderer.Render(node, tagFormatter);
+                sb.Append(html);
+            }
+
+            return sb.ToString(); ;
         }
     }
 }
