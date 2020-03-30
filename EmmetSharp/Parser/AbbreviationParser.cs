@@ -37,6 +37,11 @@ namespace EmmetSharp.Parser
             }
 
             var firstAbbreviation = abbreviations[0];
+            if (string.IsNullOrWhiteSpace(firstAbbreviation))
+            {
+                throw new FormatException($"An empty tag is contained in the abbreviation.");
+            }
+
             var firstSiblings = SplitAbbreviationAt(firstAbbreviation, '+');
             if (!MultiplicationRegex.IsMatch(firstAbbreviation) && abbreviations.Count == 1 && firstSiblings.Count == 1)
             {
@@ -50,6 +55,11 @@ namespace EmmetSharp.Parser
             var lastMultiplir = 1;
             foreach (var sibling in firstSiblings)
             {
+                if (string.IsNullOrWhiteSpace(sibling))
+                {
+                    throw new FormatException($"An empty tag is contained in the abbreviation.");
+                }
+
                 // Get multiplication data
                 var siblingBody = sibling;
                 var multiplier = 1;
@@ -219,11 +229,6 @@ namespace EmmetSharp.Parser
             if (sb.Length > 0)
             {
                 result.Add(sb.ToString());
-            }
-
-            if (result.Any(exp => exp.Length == 0))
-            {
-                throw new FormatException($"An empty tag is contained in the abbreviation (Value: {abbreviation})");
             }
 
             if (nest < 0)
