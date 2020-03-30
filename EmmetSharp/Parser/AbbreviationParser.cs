@@ -328,23 +328,25 @@ namespace EmmetSharp.Parser
 
         private static string TrimParenthesis(string value)
         {
-            while (value.Length > 2
-                && value[0] == '('
-                && value[value.Length - 1] == ')')
+            var start = 0;
+            var count = value.Length;
+            while (value[start] == '(' && value[start + count - 1] == ')')
             {
                 if (HasNonNestedPart(value))
                 {
-                    return value;
+                    break;
                 }
-                value = value.Substring(1, value.Length - 2);
+
+                start += 1;
+                count -= 2;
             }
 
-            return value;
+            return value.Substring(start, count);
 
             bool HasNonNestedPart(string v)
             {
                 var nest = 0;
-                for (var i = 0; i < v.Length; i++)
+                for (var i = start; i < count; i++)
                 {
                     switch (v[i])
                     {
