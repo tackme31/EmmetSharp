@@ -55,6 +55,7 @@
     <Compile Include="Syntax\Grouping.cs" />
     <Compile Include="Syntax\Id.cs" />
     <Compile Include="Syntax\Multiplication.cs" />
+    <Compile Include="Syntax\ClimbUp.cs" />
     <Compile Include="Syntax\Node.cs" />
     <Compile Include="Syntax\Numbering.cs" />
     <Compile Include="Syntax\Sibling.cs" />
