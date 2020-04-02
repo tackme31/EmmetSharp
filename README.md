@@ -28,7 +28,7 @@ var result = Emmet.Expand("div>p{Hello, EmmetSharp!}", tag => {
 ### Syntax
 - [x] Child (`div>p`)
 - [x] Sibling (`p+p`)
-- [ ] Climb-up (`p>em^bq`)
+- [x] Climb-up (`p>em^bq`)
 - [x] Multiplication (`li*5`)
 - [x] Grouping (`p+(div>h1)+p>a`)
 - [x] ID & Class (`div#id`, `a.class1.class2`)
