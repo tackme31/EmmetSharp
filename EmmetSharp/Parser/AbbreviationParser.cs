@@ -25,6 +25,7 @@ namespace EmmetSharp.Parser
 
         public static List<HtmlTag> Parse(string abbreviation)
         {
+            abbreviation = ApplyClimbUp(abbreviation);
             var abbreviations = SplitAbbreviationAt(abbreviation, '>');
             return ParseInner(abbreviations);
         }
@@ -37,6 +38,11 @@ namespace EmmetSharp.Parser
             }
 
             var firstAbbreviation = abbreviations[0];
+            if (string.IsNullOrWhiteSpace(firstAbbreviation))
+            {
+                throw new FormatException($"An empty tag is contained in the abbreviation.");
+            }
+
             var firstSiblings = SplitAbbreviationAt(firstAbbreviation, '+');
             if (!MultiplicationRegex.IsMatch(firstAbbreviation) && abbreviations.Count == 1 && firstSiblings.Count == 1)
             {
@@ -50,6 +56,11 @@ namespace EmmetSharp.Parser
             var lastMultiplir = 1;
             foreach (var sibling in firstSiblings)
             {
+                if (string.IsNullOrWhiteSpace(sibling))
+                {
+                    throw new FormatException($"An empty tag is contained in the abbreviation.");
+                }
+
                 // Get multiplication data
                 var siblingBody = sibling;
                 var multiplier = 1;
@@ -87,6 +98,87 @@ namespace EmmetSharp.Parser
 
             return result;
         }
+
+        private static string ApplyClimbUp(string input)
+        {
+            if (input.IndexOf('^') < 0)
+            {
+                return input;
+            }
+
+            var children = SplitAbbreviationAt(input, '>');
+
+            // Check the input has climbing-up nodes to the root.
+            List<string> climbedUp = default;
+            var climbedUpDepth = -1;
+            for (var depth = 0; depth < children.Count; depth++)
+            {
+                var climbs = SplitAbbreviationAt(children[depth], '^');
+                if (depth == 0 && climbs.Count == 1)
+                {
+                    continue;
+                }
+
+                if (depth <= climbs.Count - 1)
+                {
+                    climbedUp = climbs;
+                    climbedUpDepth = depth;
+                    break;
+                }
+            }
+
+            // No climbed-up nodes
+            if (climbedUpDepth < 0)
+            {
+                if (children.Count == 1)
+                {
+                    return children[0];
+                }
+
+                // Apply children recursively
+                var first = children[0];
+                var rest = ApplyClimbUp(string.Join(">", children.Skip(1)));
+                return $"{first}>{rest}";
+            }
+
+            // Parts that do not need to be climbed-up
+            var firstInClimedUp = climbedUp.TakeWhile((_, hutCount) => hutCount < climbedUpDepth);
+            // And need to be climbed-up.
+            var restInClimedUp = climbedUp.SkipWhile((_, hutCount) => hutCount < climbedUpDepth);
+
+            // Get non-climbed-up parts in the input (p>b>a^b^^h1^h2>span => p>b>a^b)
+            var nonClimbedUpList = children
+                .GetRange(0, climbedUpDepth)
+                .Append(string.Join("^", firstInClimedUp).TrimEnd('^'))
+                .SkipWhile(abbr => string.IsNullOrWhiteSpace(abbr))
+                .ToList();
+
+            var siblingsOfRoot = new List<List<string>>();
+            if (nonClimbedUpList.Any())
+            {
+                siblingsOfRoot.Add(nonClimbedUpList);
+            }
+
+            // Add all chimbed-up part to sibling of the root
+            var climedUpList = restInClimedUp
+                .Where(abbr => !string.IsNullOrWhiteSpace(abbr))
+                .Select(abbr => new List<string>() { abbr });
+            siblingsOfRoot.AddRange(climedUpList);
+
+            // Append the rest children to the last sibling.
+            var lastSibling = siblingsOfRoot.LastOrDefault();
+            if (lastSibling != default)
+            {
+                var restChildren = children.GetRange(climbedUpDepth + 1, children.Count - climbedUpDepth - 1);
+                lastSibling.AddRange(restChildren);
+            }
+
+            return string.Join("+", siblingsOfRoot
+                .Select(sibling => string.Join(">", sibling))
+                .Select(ApplyClimbUp) // Apply recursively
+                .Select(sibling => $"({sibling})"));
+        }
+
 
         private static string ReplaceNumberings(string abbreviation, int index, int multiplier)
         {
@@ -219,11 +311,6 @@ namespace EmmetSharp.Parser
             if (sb.Length > 0)
             {
                 result.Add(sb.ToString());
-            }
-
-            if (result.Any(exp => exp.Length == 0))
-            {
-                throw new FormatException($"An empty tag is contained in the abbreviation (Value: {abbreviation})");
             }
 
             if (nest < 0)
