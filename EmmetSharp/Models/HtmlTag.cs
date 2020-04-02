@@ -13,6 +13,12 @@ namespace EmmetSharp.Models
         public IList<HtmlTag> Children { get; set; }
         public IDictionary<string, string> Attributes { get; set; }
         public string Text { get; set; }
+        internal bool IsTextNode =>
+            !string.IsNullOrWhiteSpace(Text) &&
+            string.IsNullOrWhiteSpace(TagName) &&
+            string.IsNullOrWhiteSpace(Id) &&
+            (ClassList == null || !ClassList.Any()) &&
+            (Attributes == null || !Attributes.Any());
 
         public string ToString(TagType type = TagType.Normal)
         {
