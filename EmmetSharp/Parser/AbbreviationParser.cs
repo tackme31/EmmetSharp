@@ -37,26 +37,28 @@ namespace EmmetSharp.Parser
                 return new List<HtmlTag>();
             }
 
-            var firstAbbreviation = abbreviations[0];
-            if (string.IsNullOrWhiteSpace(firstAbbreviation))
+            var rootAbbreviation = abbreviations[0];
+            if (string.IsNullOrWhiteSpace(rootAbbreviation))
             {
                 throw new FormatException($"An empty tag is contained in the abbreviation.");
             }
 
-            var firstSiblings = SplitAbbreviationAt(firstAbbreviation, '+');
-            if (!MultiplicationRegex.IsMatch(firstAbbreviation)
-                && abbreviations.Count == 1
-                && firstSiblings.Count == 1)
+            // When the abbreviation has no children, and its root has no siblings, no multiplications.
+            var rootSiblings = SplitAbbreviationAt(rootAbbreviation, '+');
+            if (abbreviations.Count == 1 &&
+                rootSiblings.Count == 1 &&
+                !MultiplicationRegex.IsMatch(rootAbbreviation))
             {
                 return new List<HtmlTag>()
                 {
-                    CreateHtmlTag(firstSiblings[0])
+                    CreateHtmlTag(rootSiblings[0])
                 };
             }
 
+            // Parse the root of the abbreviation.
             var result = new List<HtmlTag>();
             var lastMultiplir = 1;
-            foreach (var sibling in firstSiblings)
+            foreach (var sibling in rootSiblings)
             {
                 if (string.IsNullOrWhiteSpace(sibling))
                 {
@@ -78,6 +80,7 @@ namespace EmmetSharp.Parser
                 {
                     var numberedBody = ReplaceNumberings(siblingBody, i, multiplier);
                     var siblingAbbreviations = SplitAbbreviationAt(numberedBody, '>');
+                    // Parse the siblings of the root recursively
                     var tags = ParseInner(siblingAbbreviations);
                     result.AddRange(tags);
                 }
@@ -85,15 +88,16 @@ namespace EmmetSharp.Parser
                 lastMultiplir = multiplier;
             }
 
-            var restAbbreviations = abbreviations.GetRange(1, abbreviations.Count - 1);
-            if (result.Count > 0 && restAbbreviations.Count > 0)
+            // Parse the children of the abbreviation recursively
+            var childAbbreviations = abbreviations.GetRange(1, abbreviations.Count - 1);
+            if (result.Count > 0 && childAbbreviations.Count > 0)
             {
                 var lastTags = result.GetRange(result.Count - lastMultiplir, lastMultiplir);
 
                 // When the last tag is multiplied, set its children to each tag.
                 foreach (var lastTag in lastTags)
                 {
-                    var tags = ParseInner(restAbbreviations);
+                    var tags = ParseInner(childAbbreviations);
                     lastTag.Children = tags;
                 }
             }
@@ -217,6 +221,11 @@ namespace EmmetSharp.Parser
             return abbreviation;
         }
 
+        /// <summary>
+        /// Create a HTML tag from a node abbreviation
+        /// </summary>
+        /// <param name="abbreviation"></param>
+        /// <returns></returns>
         private static HtmlTag CreateHtmlTag(string abbreviation)
         {
             var tagMatch = HtmlTagRegex.Match(abbreviation);
@@ -258,6 +267,12 @@ namespace EmmetSharp.Parser
             }
         }
 
+        /// <summary>
+        /// Split abbreviation at a toplevel delimiter.
+        /// </summary>
+        /// <param name="abbreviation"></param>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
         private static List<string> SplitAbbreviationAt(string abbreviation, char delimiter)
         {
             var result = new List<string>();
@@ -265,7 +280,7 @@ namespace EmmetSharp.Parser
             var nest = 0;
             var inText = false;
             var inAttr = false;
-            var trimmedAbbr = TrimParenthesis(abbreviation);
+            var trimmedAbbr = TrimParentheses(abbreviation);
             for (var i = 0; i < trimmedAbbr.Length; i++)
             {
                 // Update status
@@ -319,7 +334,12 @@ namespace EmmetSharp.Parser
             return result;
         }
 
-        private static string TrimParenthesis(string value)
+        /// <summary>
+        /// Remove outer parentheses.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static string TrimParentheses(string value)
         {
             var start = 0;
             var count = value.Length;
