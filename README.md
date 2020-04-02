@@ -37,7 +37,7 @@ var result = Emmet.Expand("div>p{Hello, EmmetSharp!}", tag => {
     - [x] Changing direction (`ul>li.item$@-*5`)
     - [x] Changing base (`ul>li.item$@3*5`)
 - [x] Text (`a{Content}`)
-    - Without tag (`{Click }+a{here}`)
+    - [x] Without tag (`{Click }+a{here}`)
 
 ### Other Features
 - [ ] Indentation
