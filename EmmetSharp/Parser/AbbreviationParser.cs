@@ -86,12 +86,12 @@ namespace EmmetSharp.Parser
             var restAbbreviations = abbreviations.GetRange(1, abbreviations.Count - 1);
             if (result.Count > 0 && restAbbreviations.Count > 0)
             {
-                var tags = ParseInner(restAbbreviations);
                 var lastTags = result.GetRange(result.Count - lastMultiplir, lastMultiplir);
 
                 // When the last tag is multiplied, set its children to each tag.
                 foreach (var lastTag in lastTags)
                 {
+                    var tags = ParseInner(restAbbreviations);
                     lastTag.Children = tags;
                 }
             }
