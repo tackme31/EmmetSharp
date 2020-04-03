@@ -139,13 +139,22 @@ namespace EmmetSharp.Parser
             // No climbed-up nodes
             if (climbedUpDepth < 0)
             {
+                var first = children[0];
+                var match = MultiplicationRegex.Match(first);
+                if (match.Success)
+                {
+                    // Multiply the first node
+                    var nonMultipliedPart = MultiplicationRegex.Replace(first, string.Empty);
+                    var multiplied = ConvertClimbUpToSibling(nonMultipliedPart);
+                    first = $"({multiplied}){match.Value}";
+                }
+
                 if (children.Count == 1)
                 {
-                    return children[0];
+                    return first;
                 }
 
                 // Apply children recursively
-                var first = children[0];
                 var rest = ConvertClimbUpToSibling(string.Join(">", children.Skip(1)));
                 return $"{first}>{rest}";
             }
