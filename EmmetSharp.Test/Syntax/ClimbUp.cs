@@ -65,5 +65,17 @@ namespace EmmetSharp.Test.Syntax
             var actual = Emmet.Expand("h3>h2^p>h1^span");
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void ClimbUp_WithMultiplication_CanParse()
+        {
+            var expected =
+                "<p></p>" +
+                "<a></a>" +
+                "<p></p>" +
+                "<a></a>";
+            var actual = Emmet.Expand("(p^a)*2");
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
