@@ -8,7 +8,7 @@ namespace EmmetSharp
 {
     public static class Emmet
     {
-        public static string Expand(string abbreviation, Func<HtmlTag, HtmlTag> tagFormatter = null)
+        public static string Expand(string abbreviation, Func<HtmlTag, HtmlTag> tagFormatter = null, bool escapeText = true)
         {
             if (string.IsNullOrWhiteSpace(abbreviation))
             {
@@ -19,7 +19,7 @@ namespace EmmetSharp
             var nodes = AbbreviationParser.Parse(abbreviation);
             foreach (var node in nodes)
             {
-                var html = HtmlRenderer.Render(node, tagFormatter);
+                var html = HtmlRenderer.Render(node, tagFormatter, escapeText);
                 sb.Append(html);
             }
 

@@ -11,17 +11,17 @@ namespace EmmetSharp.Renderer
     {
         private static readonly HashSet<string> NoEndTags = new HashSet<string> { "br", "hr", "img", "input", "meta", "area", "base", "col", "embed", "keygen", "link", "param", "source" };
 
-        public static string Render(HtmlTag tag, Func<HtmlTag, HtmlTag> tagFormatter = null)
+        public static string Render(HtmlTag tag, Func<HtmlTag, HtmlTag> tagFormatter = null, bool escape = true)
         {
             if (tag == null)
             {
                 throw new ArgumentNullException($"Argument '{nameof(tag)}' cannot be null.");
             }
 
-            return RenderInner(tag, tagFormatter);
+            return RenderInner(tag, tagFormatter, escape);
         }
 
-        private static string RenderInner(HtmlTag tag, Func<HtmlTag, HtmlTag> tagFormatter = null)
+        private static string RenderInner(HtmlTag tag, Func<HtmlTag, HtmlTag> tagFormatter, bool escape)
         {
             var sb = new StringBuilder();
 
@@ -34,15 +34,17 @@ namespace EmmetSharp.Renderer
 
             if (!string.IsNullOrWhiteSpace(formattedTag.Text))
             {
-                var text = formattedTag.Text ?? string.Empty;
-                sb.Append(WebUtility.HtmlEncode(text));
+                var text = escape
+                    ? WebUtility.HtmlEncode(formattedTag.Text)
+                    : formattedTag.Text;
+                sb.Append(text);
             }
 
             foreach (var child in formattedTag?.Children ?? Enumerable.Empty<HtmlTag>())
             {
                 if (formattedTag.Children != null)
                 {
-                    var innerHtml = RenderInner(child, tagFormatter);
+                    var innerHtml = RenderInner(child, tagFormatter, escape);
                     sb.Append(innerHtml);
                 }
             }
