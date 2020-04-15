@@ -19,7 +19,7 @@ namespace EmmetSharp.Parser
             @"(#(?<id>[^.#{}\[\]\s]+?))?" +
             @"(\.(?<class>[^.#{}\[\]\s]+?)){0,}" +
             @"(\[((?<attr>[^=.#{}\[\]\s]+(=""[^""]*"")?)\s?){0,}\])?" +
-            @"({(?<text>.+)})?" +
+            @"({(?<text>[^{}]+)})?" +
             @"$",
             RegexOptions.Compiled | RegexOptions.Singleline);
 
@@ -295,16 +295,16 @@ namespace EmmetSharp.Parser
                 // Update status
                 switch (trimmedAbbr[i])
                 {
-                    case '{' when !inText && !inAttr:
+                    case '{' when !inText:
                         inText = true;
                         break;
-                    case '}' when inText && !inAttr:
+                    case '}' when inText:
                         inText = false;
                         break;
-                    case '[' when !inText && !inAttr:
+                    case '[' when !inAttr:
                         inAttr = true;
                         break;
-                    case ']' when !inText && inAttr:
+                    case ']' when inAttr:
                         inAttr = false;
                         break;
                     case '(' when !inText && !inAttr:
