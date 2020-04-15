@@ -33,6 +33,20 @@ namespace EmmetSharp.Test.Syntax
 
         [TestMethod]
         [ExpectedException(typeof(FormatException))]
+        public void Text_TooMatchOpenBrace_ShouldFormatError()
+        {
+            Emmet.Expand("{{Title}");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void Text_TooMatchCloseBrace_ShouldFormatError()
+        {
+            Emmet.Expand("{Title}}");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
         public void Text_WithoutTagWithId_ShouldFormatError()
         {
             Emmet.Expand("#id{text}");
