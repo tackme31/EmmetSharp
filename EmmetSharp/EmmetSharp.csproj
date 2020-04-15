@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.3.2</Version>
+    <Version>0.3.3</Version>
     <Authors>Takumi Yamada</Authors>
     <Description>An Emmet abbreviation parser written in C#</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
