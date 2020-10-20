@@ -48,7 +48,7 @@ var result = Emmet.Expand("div>p{Hello, EmmetSharp!}", tag => {
 - [Emmet &#8212; the essential toolkit for web-developers](https://emmet.io/)
 
 ## License
-*EmmetSharp* is licensed unther the MIT license. See LICENSE.txt.
+*EmmetSharp* is licensed under the MIT license. See LICENSE.txt.
 
 ## Author
 - Takumi Yamada (xirtardauq@gmail.com)
