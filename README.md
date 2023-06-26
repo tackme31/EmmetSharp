@@ -52,3 +52,5 @@ var result = Emmet.Expand("div>p{Hello, EmmetSharp!}", tag => {
 
 ## Author
 - Takumi Yamada (xirtardauq@gmail.com)
+
+---
